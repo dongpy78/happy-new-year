@@ -27,7 +27,7 @@ const GRAVITY = 0.9; // Acceleration in px/s
 let simSpeed = 1;
 
 function getDefaultScaleFactor() {
-	if (IS_MOBILE) return 0.5;
+	if (IS_MOBILE) return 0.4; // Giảm xuống 0.4 để rendering nhanh hơn
 	if (IS_HEADER) return 0.75;
 	return 1;
 }
@@ -129,10 +129,10 @@ const store = {
 				? '3' // Desktop default
 				: IS_HEADER 
 					? '1.2' // Profile header default (doesn't need to be an int)
-					: '1', // Mobile default - giảm từ 2 xuống 1 để mượt hơn
-			autoLaunch: true,
-			finale: IS_DESKTOP ? true : false, // Tắt finale mode cho mobile để giảm lag
-			skyLighting: IS_MOBILE ? SKY_LIGHT_NONE + '' : SKY_LIGHT_NORMAL + '', // Tắt sky lighting cho mobile
+					: '0.8', // Mobile default - giảm xuống 0.8 để siêu mượt
+			autoLaunch: IS_DESKTOP ? true : false, // Tắt autoLaunch cho mobile, user phải tap để bắn
+			finale: false, // Tắt finale mode để giảm lag
+			skyLighting: IS_MOBILE ? SKY_LIGHT_NONE + '' : SKY_LIGHT_DIM + '', // Tắt/giảm sky lighting
 			hideControls: IS_HEADER,
 			longExposure: false,
 			scaleFactor: getDefaultScaleFactor()
@@ -1667,7 +1667,9 @@ class Shell {
 		if (!this.starCount) {
 			const density = options.starDensity || 1;
 			const scaledSize = this.spreadSize / 54;
-			this.starCount = Math.max(6, scaledSize * scaledSize * density);
+			const baseCount = Math.max(6, scaledSize * scaledSize * density);
+			// Giảm starCount xuống 35% cho mobile để tránh lag
+			this.starCount = IS_MOBILE ? Math.floor(baseCount * 0.35) : baseCount;
 		}
 	}
 	
