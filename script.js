@@ -27,7 +27,7 @@ const GRAVITY = 0.9; // Acceleration in px/s
 let simSpeed = 1;
 
 function getDefaultScaleFactor() {
-	if (IS_MOBILE) return 0.9;
+	if (IS_MOBILE) return 0.5;
 	if (IS_HEADER) return 0.75;
 	return 1;
 }
@@ -123,16 +123,16 @@ const store = {
 		// Note that config values used for <select>s must be strings, unless manually converting values to strings
 		// at render time, and parsing on change.
 		config: {
-			quality: String(IS_HIGH_END_DEVICE ? QUALITY_HIGH : QUALITY_NORMAL), // will be mirrored to a global variable named `quality` in `configDidUpdate`, for perf.
+			quality: String(IS_MOBILE ? QUALITY_LOW : (IS_HIGH_END_DEVICE ? QUALITY_HIGH : QUALITY_NORMAL)), // Mobile dùng LOW quality để mượt
 			shell: 'Random',
 			size: IS_DESKTOP
 				? '3' // Desktop default
 				: IS_HEADER 
 					? '1.2' // Profile header default (doesn't need to be an int)
-					: '2', // Mobile default
+					: '1', // Mobile default - giảm từ 2 xuống 1 để mượt hơn
 			autoLaunch: true,
-			finale: true,
-			skyLighting: SKY_LIGHT_NORMAL + '',
+			finale: IS_DESKTOP ? true : false, // Tắt finale mode cho mobile để giảm lag
+			skyLighting: IS_MOBILE ? SKY_LIGHT_NONE + '' : SKY_LIGHT_NORMAL + '', // Tắt sky lighting cho mobile
 			hideControls: IS_HEADER,
 			longExposure: false,
 			scaleFactor: getDefaultScaleFactor()
